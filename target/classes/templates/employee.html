@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registration and Login System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+        <style>
+            .img{
+                height: 30px;
+            }
+        </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Nguyễn Trần Trình Huy - 2180600527</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/register}">Đăng kí </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" th:href="@{/logout}">Đăng xuất</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <h1> danh sách nhân viên</h1>
+            <div>
+                <a href="/add" class="btn btn-success">Thêm nhân viên</a>
+            </div>
+        </div>
+        <table class="table table-striped table-bordered table-hover">
+            <thead class="table-secondary">
+                <tr>
+                    <th>mã nhân viên</th>
+                    <th>tên</th>
+                    <th>phái</th>
+                    <th>nơi sinh</th>
+                    <th>mã phòng</th>
+                    <th>lương</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item: ${employee}">
+                    <td th:text="${item.MaNV}"></td>
+                    <td th:text="${item.TenNV}"></td>
+                    <td>
+                        <img th:if="${item.Phai=='Nam'}" class="img" src="https://cdn-icons-png.flaticon.com/128/3884/3884864.png"
+                            alt="">
+                        <img th:if="${item.Phai=='Nu'}" class="img" src="https://cdn-icons-png.flaticon.com/128/4829/4829575.png"
+                            alt="">
+                    </td>
+                    <td th:text="${item.NoiSinh}"></td>
+                    <td th:text="${item.department.MaPhong}"></td>
+                    <td th:text="${item.Luong}"></td>
+                    <td>
+                        <a th:href="@{/delete/{id}(id=${item.id})}"><i class="bi bi-trash3"></i></a>
+                        <a th:href="@{/edit/{id}(id=${item.id})}"><i class="bi bi-pencil"></i></a>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <nav aria-label="Pagination">
+            <ul class="pagination" th:if="${employee.totalPages >1}">
+                <li class="page-item " th:class="${employee.first ? 'disabled' : ''}">
+                    <a class="page-link paging" th:data-page="${employee.number}">&LeftAngleBracket;</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, employee.totalPages - 1)}"
+                    th:class="${employee.number == i ? 'active' : ''}">
+                    <a class="page-link paging" th:data-page=" ${i+1}" th:text="${i}+1"></a>
+                </li>
+                <li class="page-item" th:class="${employee.last ? 'disabled' : ''}">
+                    <a th:unless="${name != null}" class="page-link paging"
+                        th:data-page="${employee.number + 2}">&RightAngleBracket;</a>
+                </li>
+            </ul>
+        </nav>
+        <script>
+            $('.paging').click(function (event) {
+                event.preventDefault();
+                var page = $(this).data('page');
+                if(page>=1){
+                    var currentUrl = window.location.href;
+                var separator = currentUrl.indexOf('?') !== -1 ? '&' : '?';
+
+                var pageExists = currentUrl.indexOf('page=') !== -1;
+                if (pageExists) {
+                    var regex = /([&?]page=)[^&]*/;
+                    var newUrl = currentUrl.replace(regex, '$1' + page);
+                } else {
+                    var newUrl = currentUrl + separator + "page=" + page;
+                }
+
+                window.location.href = newUrl;
+                }
+                
+            });
+
+        </script>
+    </div>
+</body>
+
+</html>
